@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI 計算機</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f5f7fa;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .calculator-card {
+            background-color: #ffffff;
+            border-radius: 16px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            width: 100%;
+            max-width: 420px;
+            padding: 30px;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 24px;
+            font-size: 24px;
+        }
+
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            color: #555;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.2s;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: #4a90e2;
+        }
+
+        button {
+            width: 100%;
+            padding: 14px;
+            background-color: #4a90e2;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.2s;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background-color: #357abd;
+        }
+
+        .result-container {
+            margin-top: 24px;
+            padding-top: 20px;
+            border-top: 1px solid #e1e8ed;
+            text-align: center;
+            display: none;
+        }
+
+        .bmi-value {
+            font-size: 36px;
+            font-weight: bold;
+            color: #333;
+            margin: 10px 0;
+        }
+
+        .bmi-status {
+            font-size: 18px;
+            font-weight: 600;
+            padding: 6px 16px;
+            border-radius: 20px;
+            display: inline-block;
+        }
+
+        /* BMI 狀態顏色分類 */
+        .underweight { background-color: #e3f2fd; color: #1976d2; }
+        .normal { background-color: #e8f5e9; color: #388e3c; }
+        .overweight { background-color: #fff3e0; color: #f57c00; }
+        .obese { background-color: #ffebee; color: #d32f2f; }
+    </style>
+</head>
+<body>
+
+    <div class="calculator-card">
+        <h2>BMI 計算機</h2>
+        
+        <div class="input-group">
+            <label for="height">身高 (cm)</label>
+            <input type="number" id="height" placeholder="例如：175" step="0.1" min="0">
+        </div>
+
+        <div class="input-group">
+            <label for="weight">體重 (kg)</label>
+            <input type="number" id="weight" placeholder="例如：65" step="0.1" min="0">
+        </div>
+
+        <button onclick="calculateBMI()">計算 BMI</button>
+
+        <div class="result-container" id="resultContainer">
+            <div>您的 BMI 指數為</div>
+            <div class="bmi-value" id="bmiValue">0.0</div>
+            <div class="bmi-status" id="bmiStatus">-</div>
+        </div>
+    </div>
+
+    <script>
+        function calculateBMI() {
+            const heightInput = document.getElementById('height').value;
+            const weightInput = document.getElementById('weight').value;
+            const resultContainer = document.getElementById('resultContainer');
+            const bmiValueDisplay = document.getElementById('bmiValue');
+            const bmiStatusDisplay = document.getElementById('bmiStatus');
+
+            const height = parseFloat(heightInput);
+            const weight = parseFloat(weightInput);
+
+            if (!height || !weight || height <= 0 || weight <= 0) {
+                alert('請輸入有效的身高與體重！');
+                return;
+            }
+
+            // 身高公分轉公尺
+            const heightInMeters = height / 100;
+            // BMI 計算公式：體重 (kg) / (身高 (m) * 身高 (m))
+            const bmi = (weight / (heightInMeters * heightInMeters)).toFixed(1);
+
+            bmiValueDisplay.textContent = bmi;
+
+            // 清除之前的狀態樣式
+            bmiStatusDisplay.className = 'bmi-status';
+
+            // 判斷 BMI 區間（依衛福部標準）
+            if (bmi < 18.5) {
+                bmiStatusDisplay.textContent = '體重過輕';
+                bmiStatusDisplay.classList.add('underweight');
+            } else if (bmi >= 18.5 && bmi < 24) {
+                bmiStatusDisplay.textContent = '正常範圍';
+                bmiStatusDisplay.classList.add('normal');
+            } else if (bmi >= 24 && bmi < 27) {
+                bmiStatusDisplay.textContent = '過重';
+                bmiStatusDisplay.classList.add('overweight');
+            } else {
+                bmiStatusDisplay.textContent = '肥胖';
+                bmiStatusDisplay.classList.add('obese');
+            }
+
+            resultContainer.style.display = 'block';
+        }
+    </script>
+
+</body>
+</html>
